@@ -5,6 +5,7 @@ import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en'
+import '@/style/index.css'
 
 // axios.defaults.baseURL = 'http://114.116.10.5:8070'
 // axios.defaults.baseURL = 'https://springbootdemo0.azurewebsites.net:8080'

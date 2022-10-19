@@ -31,21 +31,27 @@
       <!-- Ques3 -->
       <div class='ques3'>
         <span class="ques">Ques12: allow a user to give two location values (that is the lat and long for two different locations)
-     and on a page show (list) the id, lat, long, time, net, and place (name)</span>
+          and on a page show (list) the id, lat, long, time, net, and place (name)</span>
         <div>
-          <!-- <el-select v-model="location" placeholder="select location" size="small">
-            <el-option v-for="item in locationOptions" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select> -->
+          <el-row type="flex">
+            <el-input v-model="ques3Info.longitude1" placeholder="input longitude1" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3Info.latitude1" placeholder="input latitude1" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3Info.longitude2" placeholder="input longitude2" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3Info.latitude2" placeholder="input latitude2" size="small" style="width: 200px"></el-input>
+            <el-button type="primary" icon="el-icon-search" size="mini" style="margin-left: 15px" @click="ques3Click">search</el-button>
+          </el-row>
         </div>
       </div>
       <el-divider></el-divider>
       <!-- Ques4 -->
       <div class='ques4'>
-        <span class="ques">Ques13:  allow a user to give net value, for example "pr" and you will show the most recent quakes
-     (up to 6, maximum, if there are more than 1). Then allow a user to modify the location (change name) or delete (remove) that quake</span>
+        <span class="ques">Ques13: allow a user to give net value, for example "pr" and you will show the most recent quakes
+          (up to 6, maximum, if there are more than 1). Then allow a user to modify the location (change name) or delete (remove) that quake</span>
+        <el-input v-model="net" placeholder="input net" size="small" style="width: 200px"></el-input>
+        <el-button type="primary" icon="el-icon-search" size="mini" style="margin-left: 15px" @click="ques4Click">search</el-button>
       </div>
       <el-divider></el-divider>
+
       <!-- show data table -->
       <el-table :data="dataList" border stripe style="width: 100%">
         <el-table-column prop="time" label="time"></el-table-column>
@@ -77,13 +83,29 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="Search Result" :visible.sync="ques2Show">
+    <el-dialog title="Search Result" :visible.sync="ques2Show" @close="ques2Close">
       <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search2List.length}}</span>
+      <span style="margin-left: 15px;font-weight: 700">select partition: </span>
       <el-select v-model="nPart" placeholder="select partition" @change="partitionChange">
-        <el-option  v-for="item in partition" :key="item" :label="item" :value="item">
+        <el-option v-for="item in partition" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-table :data="search2List" border stripe style="width: 100%">
+      <div style="margin-left: 15px;font-weight: 700;color: pink">Notes: Click the header mag to sort and view the maximum value (Default descending order)</div>
+      <el-table v-loading="ques2Loading" :data="search2List" border stripe style="width: 100%">
+        <el-table-column prop="time" label="time"></el-table-column>
+        <el-table-column prop="latitude" label="latitude"></el-table-column>
+        <el-table-column prop="longitude" label="longitude"></el-table-column>
+        <el-table-column prop="depth" label="depth"></el-table-column>
+        <el-table-column prop="mag" sortable label="mag" order></el-table-column>
+        <el-table-column prop="net" label="net"></el-table-column>
+        <el-table-column prop="id" label="id"></el-table-column>
+        <el-table-column prop="place" label="place"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="Search Result" :visible.sync="ques3Show">
+      <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search3List.length}}</span>
+      <el-table v-loading="ques3Loading" :data="search3List" border stripe style="width: 100%">
         <el-table-column prop="time" label="time"></el-table-column>
         <el-table-column prop="latitude" label="latitude"></el-table-column>
         <el-table-column prop="longitude" label="longitude"></el-table-column>
@@ -92,6 +114,28 @@
         <el-table-column prop="net" label="net"></el-table-column>
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="place" label="place"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="Search Result" :visible.sync="ques4Show">
+      <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search4List.length}}</span>
+      <el-table v-loading="ques4Loading" :data="search4List" border stripe style="width: 100%">
+        <el-table-column prop="time" label="time"></el-table-column>
+        <el-table-column prop="latitude" label="latitude"></el-table-column>
+        <el-table-column prop="longitude" label="longitude"></el-table-column>
+        <el-table-column prop="depth" label="depth"></el-table-column>
+        <el-table-column prop="mag" label="mag" order></el-table-column>
+        <el-table-column prop="net" label="net" width="50"></el-table-column>
+        <el-table-column prop="id" label="id"></el-table-column>
+        <el-table-column prop="place" label="place"></el-table-column>
+        <el-table-column label="operation">
+          <template v-slot="{row}">
+            <el-row type="flex">
+              <el-button type="warning" icon="el-icon-edit" size="mini" circle @click="editLocation(row)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteQuake(row.id)"></el-button>
+            </el-row>
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -107,15 +151,35 @@ export default {
         current: 1
       },
       total: 0,
+      // 问题1对应的参数
       ques1Show: false,
       searchList: [],
+      // 问题2对应的参数
       lowMag: 2.0,
       highMag: 5.0,
       partition: 3,
       search2All: [],
       search2List: [],
       ques2Show: false,
-      nPart: ''
+      nPart: 1, // 默认看第一个区间
+      ques2Loading: false,
+      // 问题3对应的参数
+      ques3Info: {
+        latitude1: '',
+        latitude2: '',
+        longitude1: '',
+        longitude2: '',
+        pageNum: 1,
+        pageSize: -1
+      },
+      search3List: [],
+      ques3Show: false,
+      ques3Loading: false,
+      // 问题4对应的参数
+      ques4Loading: false,
+      search4List: [],
+      ques4Show: false,
+      net: ''
     }
   },
   async created () {
@@ -149,14 +213,14 @@ export default {
         }
       })
       this.searchList = data.records
-      this.$message.success('Search success. Query results are updated in the table!')
       this.ques1Show = true
+      this.$message({ message: 'Search success. Query results are updated in the table!', type: 'success', customClass: 'messageIndex' })
     },
     async searchLargest () {
       const { data } = await this.$http.get('/nquakes/fetchLargestQuakes')
       this.searchList = data.records
-      this.$message.success('Search success. Query results are updated in the table!')
       this.ques1Show = true
+      this.$message({ message: 'Search success. Query results are updated in the table!', type: 'success', customClass: 'messageIndex' })
     },
     async ques1Click () {
       const { data } = await this.$http.get('/quakes/countEarthquakes?magnitude=' + 5)
@@ -172,6 +236,8 @@ export default {
       })
     },
     async ques2Click () {
+      this.ques2Show = true
+      this.ques2Loading = true
       const { data } = await this.$http.get('/nquakes/fetchPartitionQuakes', {
         params: {
           highMag: this.highMag,
@@ -181,28 +247,81 @@ export default {
       })
       this.search2All = data // 全部区间的列表
       this.search2List = data[0]
-      this.$message.success('Search success. Query results are updated in the table!')
-      this.ques2Show = true
+      this.$nextTick(() => {
+        this.ques2Loading = false
+        this.$message.success('Search success. Query results are updated in the table!')
+      })
     },
     partitionChange () {
       this.search2List = this.search2All[this.nPart - 1]
       console.log(this.search2List)
     },
-    async ques5Click () {
-      // 默认4.0级别，18点以后
-      const { data } = await this.$http.get('/quakes/fetchNightQuakes')
-      const str1 = 'Earthquakes with magnitude greater than 4.0 occur more at night than in other time periods'
-      const str2 = 'Earthquakes with magnitude greater than 4.0 occur less at night than in other time periods'
-      this.$alert(`<strong style="color: red">${data ? 'Yes, ' + str1 : 'No, ' + str2}</strong>`, 'Ques5-Answer', {
-        dangerouslyUseHTMLString: true,
-        confirmButtonText: 'confirm',
-        callback: action => {
-          this.$message({
-            type: 'info',
-            message: 'close dialog~'
-          })
+    ques2Close () {
+      // 重置查看的区间序号为1
+      this.nPart = 1
+    },
+    async ques3Click () {
+      this.ques3Show = true
+      this.ques3Loading = true
+      const { data } = await this.$http.get('/nquakes/fetchQuakesBetweenTwoLocaltion', {
+        params: {
+          ...this.ques3Info // (-142.32 , 21.2223) (63.2254 , -42.8974)
         }
       })
+      this.search3List = data.records
+      this.$nextTick(() => {
+        this.ques3Loading = false
+        this.$message.success('Search success. Query results are updated in the table!')
+      })
+    },
+    async ques4Click () {
+      this.ques4Show = true
+      this.ques4Loading = true
+      const { data } = await this.$http.get('/nquakes/fetchQuakesFilteredByNet', {
+        params: {
+          net: this.net
+        }
+      })
+      this.search4List = data
+      this.$nextTick(() => {
+        this.ques4Loading = false
+        this.$message.success('Search success. Query results are updated in the table!')
+      })
+    },
+    async editLocation (quake) {
+      try {
+        const { value } = await this.$prompt('input name ', 'edit loaction') // {value: '123', action: 'confirm'}
+        // 提交更新
+        await this.$http.post('/nquakes/modifyNQuake', { ...quake, place: value })
+        // 刷新数据
+        const { data } = await this.$http.get('/nquakes/fetchQuakesFilteredByNet', {
+          params: {
+            net: this.net
+          }
+        })
+        this.search4List = data
+        this.$message.success('Successfully modified')
+      } catch {
+        this.$message({
+          type: 'info',
+          message: 'cancel input'
+        })
+      }
+    },
+    async deleteQuake (id) {
+      await this.$http.delete('/nquakes/removeNQuake', {
+        params: {
+          id
+        }
+      })
+      // 刷新数据
+      const { data } = await this.$http.get('/nquakes/fetchQuakesFilteredByNet', {
+        params: {
+          net: this.net
+        }
+      })
+      this.search4List = data
+      this.$message.success('Successfully deleted')
     }
   }
 }
