@@ -87,7 +87,7 @@
       <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search2List.length}}</span>
       <span style="margin-left: 15px;font-weight: 700">select partition: </span>
       <el-select v-model="nPart" placeholder="select partition" @change="partitionChange">
-        <el-option v-for="item in partition" :key="item" :label="item" :value="item">
+        <el-option v-for="item in Number(partition)" :key="item" :value="item">
         </el-option>
       </el-select>
       <div style="margin-left: 15px;font-weight: 700;color: pink">Notes: Click the header mag to sort and view the maximum value (Default descending order)</div>
@@ -154,10 +154,10 @@ export default {
       // 问题1对应的参数
       ques1Show: false,
       searchList: [],
-      // 问题2对应的参数
-      lowMag: 2.0,
-      highMag: 5.0,
-      partition: 3,
+      // 问题2对应的参数,2 5 4 low high partition
+      lowMag: '',
+      highMag: '',
+      partition: '',
       search2All: [],
       search2List: [],
       ques2Show: false,
