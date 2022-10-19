@@ -79,8 +79,8 @@
 
     <el-dialog title="Search Result" :visible.sync="ques2Show">
       <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search2List.length}}</span>
-      <el-select v-model="nPart" placeholder="select partition">
-        <el-option @change="partitionChange" v-for="item in partition" :key="item" :label="item" :value="item">
+      <el-select v-model="nPart" placeholder="select partition" @change="partitionChange">
+        <el-option  v-for="item in partition" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
       <el-table :data="search2List" border stripe style="width: 100%">
@@ -186,6 +186,7 @@ export default {
     },
     partitionChange () {
       this.search2List = this.search2All[this.nPart - 1]
+      console.log(this.search2List)
     },
     async ques5Click () {
       // 默认4.0级别，18点以后
