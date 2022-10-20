@@ -17,7 +17,7 @@
       <el-divider></el-divider>
       <!-- Ques2 -->
       <div class='ques2'>
-        <span class="ques">Ques11: give two magnitude values (Low and High) and the number of partitions (called N),show the number of quakes between those Low and High values in N partitions, </span>
+        <span class="ques">Ques11: Give two magnitude values (Low and High) and the number of partitions (called N),show the number of quakes between those Low and High values in N partitions, </span>
         <div>
           <el-row type="flex">
             <el-input v-model="lowMag" placeholder="input lowMag" size="small" style="width: 200px"></el-input>
@@ -30,7 +30,7 @@
       <el-divider></el-divider>
       <!-- Ques3 -->
       <div class='ques3'>
-        <span class="ques">Ques12: allow a user to give two location values (that is the lat and long for two different locations)
+        <span class="ques">Ques12: Allow a user to give two location values (that is the lat and long for two different locations)
           and on a page show (list) the id, lat, long, time, net, and place (name)</span>
         <div>
           <el-row type="flex">
@@ -43,9 +43,25 @@
         </div>
       </div>
       <el-divider></el-divider>
+       <!-- Ques3.5 -->
+      <div class='ques3'>
+        <span class="ques">Ques12.5: Allow a user to also specify High and Low mag values, only give results within those values.</span>
+        <div>
+          <el-row type="flex">
+            <el-input v-model="ques3AddInfo.longitude1" placeholder="input longitude1" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3AddInfo.latitude1" placeholder="input latitude1" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3AddInfo.longitude2" placeholder="input longitude2" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3AddInfo.latitude2" placeholder="input latitude2" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3AddInfo.lowMag" placeholder="input lowMag" size="small" style="width: 200px"></el-input>
+            <el-input v-model="ques3AddInfo.highMag" placeholder="input highMag" size="small" style="width: 200px"></el-input>
+            <el-button type="primary" icon="el-icon-search" size="mini" style="margin-left: 15px" @click="ques3AddClick">search</el-button>
+          </el-row>
+        </div>
+      </div>
+      <el-divider></el-divider>
       <!-- Ques4 -->
       <div class='ques4'>
-        <span class="ques">Ques13: allow a user to give net value, for example "pr" and you will show the most recent quakes
+        <span class="ques">Ques13: Allow a user to give net value, for example "pr" and you will show the most recent quakes
           (up to 6, maximum, if there are more than 1). Then allow a user to modify the location (change name) or delete (remove) that quake</span>
         <el-input v-model="net" placeholder="input net" size="small" style="width: 200px"></el-input>
         <el-button type="primary" icon="el-icon-search" size="mini" style="margin-left: 15px" @click="ques4Click">search</el-button>
@@ -71,7 +87,7 @@
 
     <el-dialog title="Search Result" :visible.sync="ques1Show">
       <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + searchList.length}}</span>
-      <el-table :data="searchList" border stripe style="width: 100%">
+      <el-table :data="searchList" border stripe style="width: 100%" height="550">
         <el-table-column prop="time" label="time"></el-table-column>
         <el-table-column prop="latitude" label="latitude"></el-table-column>
         <el-table-column prop="longitude" label="longitude"></el-table-column>
@@ -91,12 +107,12 @@
         </el-option>
       </el-select>
       <div style="margin-left: 15px;font-weight: 700;color: pink">Notes: Click the header mag to sort and view the maximum value (Default descending order)</div>
-      <el-table v-loading="ques2Loading" :data="search2List" border stripe style="width: 100%">
+      <el-table v-loading="ques2Loading" :data="search2List" border stripe style="width: 100%" height="550">
         <el-table-column prop="time" label="time"></el-table-column>
         <el-table-column prop="latitude" label="latitude"></el-table-column>
         <el-table-column prop="longitude" label="longitude"></el-table-column>
         <el-table-column prop="depth" label="depth"></el-table-column>
-        <el-table-column prop="mag" sortable label="mag" order></el-table-column>
+        <el-table-column prop="mag" sortable label="mag"></el-table-column>
         <el-table-column prop="net" label="net"></el-table-column>
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="place" label="place"></el-table-column>
@@ -105,7 +121,7 @@
 
     <el-dialog title="Search Result" :visible.sync="ques3Show">
       <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search3List.length}}</span>
-      <el-table v-loading="ques3Loading" :data="search3List" border stripe style="width: 100%">
+      <el-table v-loading="ques3Loading" :data="search3List" border stripe style="width: 100%" height="550">
         <el-table-column prop="time" label="time"></el-table-column>
         <el-table-column prop="latitude" label="latitude"></el-table-column>
         <el-table-column prop="longitude" label="longitude"></el-table-column>
@@ -117,14 +133,28 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="Search Result" :visible.sync="ques4Show">
-      <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search4List.length}}</span>
-      <el-table v-loading="ques4Loading" :data="search4List" border stripe style="width: 100%">
+    <el-dialog title="Search Result" :visible.sync="ques3AddShow">
+      <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search3AddList.length}}</span>
+      <el-table v-loading="ques3AddLoading" :data="search3AddList" border stripe style="width: 100%" height="550">
         <el-table-column prop="time" label="time"></el-table-column>
         <el-table-column prop="latitude" label="latitude"></el-table-column>
         <el-table-column prop="longitude" label="longitude"></el-table-column>
         <el-table-column prop="depth" label="depth"></el-table-column>
-        <el-table-column prop="mag" label="mag" order></el-table-column>
+        <el-table-column prop="mag" label="mag" sortable></el-table-column>
+        <el-table-column prop="net" label="net"></el-table-column>
+        <el-table-column prop="id" label="id"></el-table-column>
+        <el-table-column prop="place" label="place"></el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="Search Result" :visible.sync="ques4Show">
+      <span style="color: red;font-weight: 700;font-size: 18px">{{'Total: ' + search4List.length}}</span>
+      <el-table v-loading="ques4Loading" :data="search4List" border stripe style="width: 100%" height="550">
+        <el-table-column prop="time" label="time"></el-table-column>
+        <el-table-column prop="latitude" label="latitude"></el-table-column>
+        <el-table-column prop="longitude" label="longitude"></el-table-column>
+        <el-table-column prop="depth" label="depth"></el-table-column>
+        <el-table-column prop="mag" label="mag" sortable></el-table-column>
         <el-table-column prop="net" label="net" width="50"></el-table-column>
         <el-table-column prop="id" label="id"></el-table-column>
         <el-table-column prop="place" label="place"></el-table-column>
@@ -175,6 +205,20 @@ export default {
       search3List: [],
       ques3Show: false,
       ques3Loading: false,
+      // 问题3.5对应的参数(额外的加分)
+      ques3AddInfo: {
+        latitude1: '',
+        latitude2: '',
+        longitude1: '',
+        longitude2: '',
+        pageNum: 1,
+        pageSize: -1,
+        highMag: '',
+        lowMag: ''
+      },
+      search3AddList: [],
+      ques3AddShow: false,
+      ques3AddLoading: false,
       // 问题4对应的参数
       ques4Loading: false,
       search4List: [],
@@ -279,6 +323,20 @@ export default {
       this.search3List = data.records
       this.$nextTick(() => {
         this.ques3Loading = false
+        this.$message.success('Search success. Query results are updated in the table!')
+      })
+    },
+    async ques3AddClick () {
+      this.ques3AddShow = true
+      this.ques3AddLoading = true
+      const { data } = await this.$http.get('/nquakes/fetchQuakesBetweenTwoLocaltion', {
+        params: {
+          ...this.ques3AddInfo // (-142.32 , 21.2223) (63.2254 , -42.8974)
+        }
+      })
+      this.search3AddList = data.records
+      this.$nextTick(() => {
+        this.ques3AddLoading = false
         this.$message.success('Search success. Query results are updated in the table!')
       })
     },
