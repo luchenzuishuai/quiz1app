@@ -185,6 +185,14 @@ export default {
   async created () {
     this.getQuakesList()
   },
+  mounted () {
+    this.$notify({
+      title: 'Hello',
+      message: '😀Have a good day~',
+      type: 'success',
+      duration: 3000
+    })
+  },
   methods: {
     async getQuakesList () {
       const { data } = await this.$http.get('/nquakes/fetchAll', {
