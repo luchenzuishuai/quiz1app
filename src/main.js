@@ -11,8 +11,8 @@ import '@/style/index.css'
 // axios.defaults.baseURL = 'https://springbootdemo0.azurewebsites.net:8080'
 // axios.defaults.baseURL = 'https://20.40.202.19:8080'
 
-// 带SSL，解决https请求http接口报错问题
-axios.defaults.baseURL = 'https://www.2b206.icu:8082'
+// 带SSL，解决https请求http接口报错问题 作业808x,考试909x
+axios.defaults.baseURL = 'https://www.2b206.icu:9091'
 
 axios.defaults.timeout = 30000
 
